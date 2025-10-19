@@ -1,79 +1,95 @@
 # Employee Management Dashboard
 
 ## Overview
-This project is a modern employee management dashboard built with React and Vite. It provides an at-a-glance view of workforce statistics, a searchable employee directory, and inline tools for adding, editing, or removing team members. Employee data is persisted in `localStorage`, making the app fully functional without a backend.
+This project is an employee operations dashboard built with React and Vite. It provides a consolidated view of workforce metrics, a searchable employee table, and inline tools for creating, editing, or removing team members. The experience is fully client-side: employee records persist in `localStorage`, so no backend is required for day-to-day use.
 
-## Features
-- **Navigation sidebar** with quick links and actions
-- **Header insights** summarizing total, active, on-leave, and probation counts
-- **Dashboard cards** highlighting key workforce metrics
-- **Searchable employee directory** with sortable information cards
-- **Add/Edit employee modals** with validation and accessible focus management
-- **Local persistence** of employee data via browser `localStorage`
+## Key Features
+- **Interactive metrics header** summarizing totals, active headcount, on-leave teammates, and probationary hires.
+- **Sidebar navigation and quick actions** for jumping between dashboard and directory sections, plus an always-available "Add Employee" shortcut.
+- **Searchable employee directory** with department/status badges, inline edit/delete actions, and responsive table layout.
+- **Modal-driven create/update flows** powered by `EmployeeForm.jsx`, including required field validation and graceful error messaging.
+- **Persistent data layer** that hydrates from bundled seed data and stores changes in browser `localStorage` under the `employees` key.
+- **Error resilience** via a reusable `ErrorBoundary` used around high-impact UI regions and forms.
 
 ## Tech Stack
-- **React 18** with hooks (`useState`, `useEffect`, `useCallback`)
-- **Vite** for fast development and optimized builds
-- **Tailwind CSS** utility classes for styling
-- **Bun / npm** compatible scripts (project ships with both `package-lock.json` and `bun.lock`)
+- **React 18** with hooks (`useState`, `useEffect`, `useCallback`) and an application-level error boundary.
+- **Vite** development tooling with a custom dev server port (`8080`) and optimized production build configuration.
+- **Tailwind CSS** utility classes alongside scoped component styles in `src/App.css`.
+- **Inter variable font** (`@fontsource-variable/inter`) for typography consistency.
+- **npm or Bun** workflows, with both lockfiles committed for flexibility.
 
-## Getting Started
+## Quick Start
 ### Prerequisites
-- Node.js ≥ 18 (or Bun ≥ 1.0 if you prefer Bun tooling)
+- Node.js ≥ 18.0.0 *or* Bun ≥ 1.0.0.
 
-### Installation
+### Install Dependencies
 ```bash
 # Using npm
 npm install
 
-# Using bun
+# Using Bun
 bun install
 ```
 
-### Development Server
+### Run the Development Server
 ```bash
 npm run dev
 # or
 bun run dev
 ```
-The app will be available at `http://localhost:5173` by default.
+The Vite dev server listens on `http://localhost:8080` (configurable in `vite.config.js`).
 
-### Production Build
+### Build & Preview Production Output
 ```bash
 npm run build
 npm run preview
-# or with bun
+# or with Bun
 bun run build
 bun run preview
+```
+`npm run preview` (or `bun run preview`) serves the production bundle for smoke testing.
+
+### Lint the Workspace
+```bash
+npm run lint
+# or
+bun run lint
 ```
 
 ## Project Structure
 ```
 src/
-  App.jsx              # Main layout with sidebar, header, and dashboard sections
-  App.css              # Global styles and design tokens
+  App.jsx               // App shell: sidebar, metrics header, dashboards, modals
+  App.css               // Extended design tokens and fallback styles
+  assets/               // Static assets consumed in the UI
   components/
-    common/            # Shared UI primitives (Button, Modal, Input, Select)
+    common/
+      Button.jsx        // Shared button primitive with variants
+      Input.jsx         // Labeled text input with validation state
+      Modal.jsx         // Accessible dialog with escape/overlay handling
+      Select.jsx        // Styled select control
     employees/
-      EmployeeList.jsx # Searchable employee directory
-      EmployeeForm.jsx # Form used by add/edit modals
-  assets/              # Static assets (logos, icons)
-  main.jsx             # Application bootstrap
+      EmployeeForm.jsx  // Controlled form used for add/edit flows
+      EmployeeList.jsx  // Searchable table with inline actions and badges
+  index.css             // Tailwind layer definitions and global resets
+  main.jsx              // React root bootstrapper
 ```
 
-## Data & State
-- Employee records are initialized with sample data and stored in `localStorage` under the `employees` key.
-- Forms perform basic validation (name and valid email required) before persisting changes.
-- Deletions prompt for confirmation to prevent accidental data loss.
+## Data & State Management
+- Seed data in `App.jsx` populates the dashboard on first load; subsequent changes persist via `localStorage.setItem('employees', ...)`.
+- Derived metrics (active, on-leave, probation counts) are computed from the current employee array each render.
+- Search filtering is performed client-side across all employee fields for quick lookup.
+- Error messages surface above the directory when validation or persistence issues occur.
 
-## Customization
-- Update header insight cards or sidebar navigation labels directly in `src/App.jsx`.
-- Tailwind utility classes make it easy to adjust spacing, colors, and typography.
-- To wire the app to a real API, replace the `localStorage` persistence logic in `App.jsx` with fetch calls to your backend.
+## Accessibility & UX Notes
+- Modal focus is trapped implicitly by closing on escape and via backdrop click, with `document.body` scroll locking while open.
+- Buttons, links, and table rows include hover/focus states through Tailwind utilities for keyboard navigation.
+- The error boundary ensures unexpected issues render a recoverable message rather than blank UI.
 
-## Scripts
-- **`npm run lint`** – Run ESLint (if configured)
-- **`npm run test`** – Placeholder for future tests (not currently defined)
+## Local Development Tips
+- To reset the dataset, clear the `employees` key from your browser's Local Storage while the app is closed.
+- Update navigation labels, metric copy, or seed data directly in `src/App.jsx` when tailoring for your organization.
+- When integrating with a backend, replace the `localStorage` persistence methods with asynchronous calls in the add/edit/delete handlers.
 
 ## License
-This project inherits the default license of your repository. Update this section if you intend to distribute the project under specific terms.
+This project inherits the repository's default license. Update this section if distributing under explicit terms.
