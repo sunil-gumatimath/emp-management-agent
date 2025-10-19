@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import './App.css';
 import '@fontsource-variable/inter/wght.css';
+import { BrowserRouter as Router } from 'react-router-dom';
 import EmployeeList from './components/employees/EmployeeList';
 import EmployeeForm from './components/employees/EmployeeForm';
 import Modal from './components/common/Modal';
+import Button from './components/common/Button'; // Import Button component
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component {
@@ -19,6 +22,10 @@ class ErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     console.error('Error caught by boundary:', error, errorInfo);
   }
+
+  static propTypes = {
+    children: PropTypes.node.isRequired,
+  };
 
   render() {
     if (this.state.hasError) {
@@ -136,7 +143,6 @@ const AppContent = () => {
   const onLeaveEmployees = employees.filter(employee => employee.status === 'On Leave').length;
   const probationEmployees = employees.filter(employee => employee.status === 'Probation').length;
   const departmentCount = new Set(employees.map(employee => employee.department)).size;
-  const currentYear = new Date().getFullYear();
 
   // Save employees to localStorage whenever it changes
   useEffect(() => {
@@ -297,26 +303,26 @@ const AppContent = () => {
             </div>
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto py-5 pl-0 pr-2 md:pl-2 md:pr-4 lg:pl-3 lg:pr-6">
+         <main className="flex-1 overflow-y-auto py-6 px-6">
           <div className="w-full space-y-5">
 
             <section id="dashboard" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <p className="text-sm font-medium text-gray-500">Total Employees</p>
                 <p className="mt-2 text-3xl font-semibold text-gray-900">{totalEmployees}</p>
                 <p className="mt-1 text-xs text-gray-500">Across {departmentCount} departments</p>
               </div>
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <p className="text-sm font-medium text-gray-500">Active</p>
                 <p className="mt-2 text-3xl font-semibold text-green-600">{activeEmployees}</p>
                 <p className="mt-1 text-xs text-gray-500">Currently engaged team members</p>
               </div>
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <p className="text-sm font-medium text-gray-500">On Leave</p>
                 <p className="mt-2 text-3xl font-semibold text-yellow-600">{onLeaveEmployees}</p>
                 <p className="mt-1 text-xs text-gray-500">Approved leave in progress</p>
               </div>
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <p className="text-sm font-medium text-gray-500">Probation</p>
                 <p className="mt-2 text-3xl font-semibold text-blue-600">{probationEmployees}</p>
                 <p className="mt-1 text-xs text-gray-500">New hires under review</p>
@@ -344,48 +350,69 @@ const AppContent = () => {
                 </div>
               </div>
             )}
-            <div className="flex justify-between items-center mb-6">
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                  </svg>
+            {/* Search Bar */}
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <div className="w-full sm:flex-1 relative">
+                  <input
+                    id="employee-search"
+                    type="text"
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    style={{ backgroundColor: 'white' }}
+                    placeholder="Search employees..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    aria-label="Search employees"
+                  />
+                  {searchTerm && (
+                    <button
+                      onClick={() => setSearchTerm('')}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      aria-label="Clear search"
+                    >
+                      <svg className="h-5 w-5 text-gray-500 hover:text-gray-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
-                <input
-                  type="text"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="Search employees..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                <div className="w-full sm:w-auto">
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      setFormData(initialFormState);
+                      setIsAddModalOpen(true);
+                      setError(null);
+                    }}
+                    className="w-full"
+                  >
+                    <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" />
+                    </svg>
+                    Add Employee
+                  </Button>
+                </div>
               </div>
-              <button
-                onClick={() => {
-                  setFormData(initialFormState);
-                  setIsAddModalOpen(true);
-                }}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Add Employee
-              </button>
-            </div>
-            <EmployeeList 
-              employees={filteredEmployees} 
-              onEdit={handleEditClick} 
-              onDelete={handleDeleteEmployee} 
+               {searchTerm && (
+                 <div className="mt-3 text-sm text-gray-600">
+                   <span className="font-medium">{filteredEmployees.length}</span> employee{filteredEmployees.length !== 1 ? 's' : ''} found
+                   {filteredEmployees.length === 0 && searchTerm && (
+                     <span className="ml-2 text-gray-500">• Try a different search term</span>
+                   )}
+                 </div>
+               )}
+             </div>
+            <EmployeeList
+              employees={filteredEmployees}
+              onEdit={handleEditClick}
+              onDelete={handleDeleteEmployee}
+              searchTerm={searchTerm}
             />
           </div>
         </main>
-      </div>
-      <footer className="bg-white border-t border-gray-200">
-        <div className="max-w-7xl mx-auto py-6 px-4 overflow-hidden sm:px-6 lg:px-8">
-          <p className="text-center text-base text-gray-500">
-            &copy; {currentYear} Employee Management. All rights reserved.
-          </p>
-        </div>
-      </footer>
+       </div>
 
-      {/* Add Employee Modal */}
+       {/* Add Employee Modal */}
       <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title="Add Employee">
         <EmployeeForm 
           formData={formData} 

@@ -2,13 +2,11 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../common/Button';
 
-const EmployeeList = ({ 
-  employees, 
-  onEdit, 
-  onDelete, 
-  onAddNew,
-  searchTerm,
-  onSearchChange 
+const EmployeeList = ({
+  employees,
+  onEdit,
+  onDelete,
+  searchTerm
 }) => {
   // Function to get department color class
   const getDepartmentClass = (department) => {
@@ -59,44 +57,14 @@ const EmployeeList = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden" role="region" aria-label="Employee List">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden" role="region" aria-label="Employee List">
       <div className="px-6 py-5 border-b border-gray-200">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6 w-full sm:w-auto">
-            <h2 className="text-lg font-medium text-gray-900" id="employee-list-heading">
-              Employees
-              <span className="ml-2 text-sm font-normal text-gray-500">
-                ({employees.length} {employees.length === 1 ? 'employee' : 'employees'})
-              </span>
-            </h2>
-            <div className="w-full sm:w-64">
-              <label htmlFor="search-employees" className="sr-only">Search employees</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <input
-                  id="search-employees"
-                  type="search"
-                  placeholder="Search employees..."
-                  className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  value={searchTerm}
-                  onChange={(e) => onSearchChange(e.target.value)}
-                  aria-label="Search employees"
-                  aria-describedby="employee-list-heading"
-                />
-              </div>
-            </div>
-          </div>
-          <Button 
-            onClick={onAddNew}
-            className="w-full sm:w-auto justify-center"
-          >
-            Add Employee
-          </Button>
-        </div>
+        <h2 className="text-lg font-medium text-gray-900" id="employee-list-heading">
+          Employees
+          <span className="ml-2 text-sm font-normal text-gray-500">
+            ({employees.length} {employees.length === 1 ? 'employee' : 'employees'})
+          </span>
+        </h2>
       </div>
 
       {employees.length === 0 ? (
@@ -121,18 +89,7 @@ const EmployeeList = ({
               ? 'No employees match your search. Try a different search term.'
               : 'Get started by adding a new employee.'}
           </p>
-          <div className="mt-6">
-            <Button
-              type="button"
-              onClick={onAddNew}
-              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              <svg className="-ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-              </svg>
-              Add Employee
-            </Button>
-          </div>
+
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -218,7 +175,7 @@ const EmployeeList = ({
                           <button
                             type="button"
                             onClick={() => confirmDelete(employee.id)}
-                            className="text-xs text-white bg-red-600 hover:bg-red-700 px-2 py-1 rounded"
+                            className="text-xs text-white bg-blue-500 hover:bg-blue-600 px-2 py-1 rounded"
                           >
                             Confirm
                           </button>
@@ -267,13 +224,7 @@ EmployeeList.propTypes = {
   ).isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  onAddNew: PropTypes.func.isRequired,
-  searchTerm: PropTypes.string,
-  onSearchChange: PropTypes.func.isRequired
-};
-
-EmployeeList.defaultProps = {
-  searchTerm: ''
+  searchTerm: PropTypes.string
 };
 
 export default EmployeeList;
